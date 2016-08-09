@@ -1,42 +1,26 @@
-
+const validator   = require('vadidator')
 const compression = require('compression');
-const parser      = require('ua-parser-js');
 const express     = require('express');
 const app         = express();
 
 app.use(compression());
 
-app.use( (req, res) => {
+app.use('/:url', (req, res) => {
 
     if (req.url === '/favicon.ico') {
         return;
     }
 
-    let ipAddress = req.ip;
-    let language = req.get('Accept-Language');
-    let userAgent = req.get('User-Agent');
+    var url = req.params.url;
+    var validUrl = validator.isUrl(url);
 
-    let reIp = /\d\.?/g;
-    let reLanguage = /,.*/g;
+    var errorResponse = { error: url + " is not valid."};
 
-    // returns the matched IP address only
-    let filteredIpAddress = ipAddress.match(reIp).join('');
+    if (!validUrl) {
+        return res.json(errorObj)
+    }
 
-    // filters out everything after the initial language code
-    let filteredLanguage = language.replace(reLanguage, '');
-
-    // parses User-Agent string into an object
-    let parsedUa = parser(userAgent);
-    let os = parsedUa.os;
-    let filteredOperatingSystem = `${os.name} ${os.version}`;
-
-    parsedJSON = {
-        ip_address: filteredIpAddress,
-        language: filteredLanguage,
-        operating_system: filteredOperatingSystem
-    };
-
-    return res.json(parsedJSON);
+    return res.json({url: url});
 });
 
 var server = app.listen(process.env.PORT || 4000, () => {
