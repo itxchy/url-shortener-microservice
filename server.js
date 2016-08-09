@@ -14,10 +14,12 @@ db.once('open', function() {
     console.log('mongodb connected!')
 });
 
-// create schema {
-//      original_url: URL,
-//      short_url: SHORTY
-//  }
+var urlSchema = mongoose.Schema({
+    original_url: String,
+    short_url: String
+});
+
+var ShortUrl = mongoose.model('ShortUrl', urlSchema);
 
 app.use('/:url', (req, res) => {
 
