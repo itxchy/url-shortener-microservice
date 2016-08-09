@@ -1,5 +1,6 @@
-const validator   = require('vadidator')
+const validator   = require('vadidator');
 const compression = require('compression');
+const mongoose    = require('mongoose');
 const express     = require('express');
 const app         = express();
 
