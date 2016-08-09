@@ -1,4 +1,4 @@
-const validator   = require('vadidator');
+const validator   = require('validator');
 const compression = require('compression');
 const mongoose    = require('mongoose');
 const express     = require('express');
@@ -13,6 +13,11 @@ db.on('error', console.error.bind(console, 'Mongoose encountered an error.'));
 db.once('open', function() {
     console.log('mongodb connected!')
 });
+
+// create schema {
+//      original_url: URL,
+//      short_url: SHORTY
+//  }
 
 app.use('/:url', (req, res) => {
 
