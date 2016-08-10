@@ -2,6 +2,7 @@ const mongoose    = require('mongoose');
 const ShortUrl    = require('./models/shorturl');
 
 const validator   = require('validator');
+const shortid     = require('shortid');
 const compression = require('compression');
 const express     = require('express');
 const app         = express();
@@ -26,6 +27,7 @@ app.use(compression());
 
 app.use('/:url', (req, res) => {
 
+    // ignore requests for /favicon.ico
     if (req.url === '/favicon.ico') {
         return;
     }
@@ -42,7 +44,14 @@ app.use('/:url', (req, res) => {
         return res.json(errorResponse);
     }
 
-    // TODO create a hash from valid URL
+    var generatedID = shortid.generate();
+    var shortendURL = `${req.hostname}/${generatedID}`
+
+    var newShortUrl = new ShortUrl({
+        id: generatedID,
+        original_url: url,
+        short_url: shortenedURL
+    });
 
     // TODO create a new database entry with the url and hash, and save it to the database
 

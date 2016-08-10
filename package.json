@@ -34,6 +34,7 @@
     "compression": "^1.6.2",
     "express": "^4.14.0",
     "mongoose": "^4.5.8",
+    "shortid": "^2.2.6",
     "validator": "^5.5.0"
   }
 }
