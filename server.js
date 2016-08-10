@@ -8,6 +8,16 @@ const app         = express();
  * Initiallize MongoDB
  */
 
+var Schema = mongoose.Schema;
+
+var urlSchema = new Schema({
+    id: String,
+    original_url: String,
+    short_url: String
+});
+
+var ShortUrl = mongoose.model('ShortUrl', urlSchema);
+
 mongoose.connect('mongodb://localhost:27017/local');
 
 var db = mongoose.connection;
@@ -15,14 +25,6 @@ db.on('error', console.error.bind(console, 'Mongoose encountered an error.'));
 db.once('open', function() {
     console.log('mongodb connected!')
 });
-
-var urlSchema = mongoose.Schema({
-    id: String,
-    original_url: String,
-    short_url: String
-});
-
-var ShortUrl = mongoose.model('ShortUrl', urlSchema);
 
 /**
  * Handle Requests
@@ -42,7 +44,7 @@ app.use('/:url', (req, res) => {
     var errorResponse = { error: url + " is not valid."};
 
     if (!validUrl) {
-        return res.json(errorObj)
+        return res.json(errorResponse);
     }
 
     return res.json({url: url});
