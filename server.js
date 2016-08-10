@@ -1,22 +1,14 @@
+const mongoose    = require('mongoose');
+const ShortUrl    = require('./models/shorturl');
+
 const validator   = require('validator');
 const compression = require('compression');
-const mongoose    = require('mongoose');
 const express     = require('express');
 const app         = express();
 
 /**
  * Initiallize MongoDB
  */
-
-var Schema = mongoose.Schema;
-
-var urlSchema = new Schema({
-    id: String,
-    original_url: String,
-    short_url: String
-});
-
-var ShortUrl = mongoose.model('ShortUrl', urlSchema);
 
 mongoose.connect('mongodb://localhost:27017/local');
 
@@ -40,14 +32,20 @@ app.use('/:url', (req, res) => {
 
     var url = req.params.url;
     var validUrl = validator.isUrl(url);
-
     var errorResponse = { error: url + " is not valid."};
 
     if (!validUrl) {
+
+        // TODO check if passed param is an ID that matches a valid short URL in tge database
+            // if so, return it
+
         return res.json(errorResponse);
     }
 
-    return res.json({url: url});
+    // TODO create a hash from valid URL
+
+    // TODO create a new database entry with the url and hash, and save it to the database
+
 });
 
 var server = app.listen(process.env.PORT || 4000, () => {
