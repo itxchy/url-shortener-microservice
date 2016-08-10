@@ -53,7 +53,13 @@ app.use('/:url', (req, res) => {
         short_url: shortenedURL
     });
 
-    // TODO create a new database entry with the url and hash, and save it to the database
+    newShortUrl.save(function(err) {
+        if (err) throw err;
+        console.log('New short URL saved!');
+    });
+    // TODO return a JSON object of original and shortened URL after the short URL was successfully saved
+    // if an error occured, return the error response with the error
+
 
 });
 
