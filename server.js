@@ -4,7 +4,9 @@ const mongoose    = require('mongoose');
 const express     = require('express');
 const app         = express();
 
-app.use(compression());
+/**
+ * Initiallize MongoDB
+ */
 
 mongoose.connect('mongodb://localhost:27017/local');
 
@@ -15,11 +17,18 @@ db.once('open', function() {
 });
 
 var urlSchema = mongoose.Schema({
+    id: String,
     original_url: String,
     short_url: String
 });
 
 var ShortUrl = mongoose.model('ShortUrl', urlSchema);
+
+/**
+ * Handle Requests
+ */
+
+app.use(compression());
 
 app.use('/:url', (req, res) => {
 
