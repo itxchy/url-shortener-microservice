@@ -38,8 +38,11 @@ app.use('/:url', (req, res) => {
 
     if (!validUrl) {
 
-        // TODO check if passed param is an ID that matches a valid short URL in tge database
-            // if so, return it
+        // if the passed param is invalid, check if it's a short URL id.
+        // if so, then redirect to the original URL. if not, then return an error.
+        ShortUrl.findOne({'id': url}, 'original_url', function(err, shortUrl) {
+            return res.redirect(shortUrl.original_url); 
+        })
 
         return res.json(errorResponse);
     }
@@ -57,9 +60,6 @@ app.use('/:url', (req, res) => {
         if (err) throw err;
         console.log('New short URL saved!');
     });
-    // TODO return a JSON object of original and shortened URL after the short URL was successfully saved
-    // if an error occured, return the error response with the error
-
 
 });
 
