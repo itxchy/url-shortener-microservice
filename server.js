@@ -36,6 +36,8 @@ app.use('/:url', (req, res) => {
     var validUrl = validator.isUrl(url);
     var errorResponse = { error: url + " is not valid."};
 
+    // TODO break up the logic into smaller, single-responsibily, testable functions
+
     if (!validUrl) {
 
         // if the passed param is invalid, check if it's a short URL id.
