@@ -79,7 +79,9 @@ function saveNewShortUrl(generatedID, shortenedURL, res, callback) {
     });
 
     return newShortUrl.save( (err, newShortUrl) => {
-        if (err) throw err;
+        if (err) {
+            return res.status(500).send(err);
+        }
         console.log('New short URL saved!');
 
         return callback(newShortUrl);
