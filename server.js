@@ -28,7 +28,7 @@ app.use(compression());
 app.use('/', express.static(__dirname + '/public'));
 
 let url;
-let errorResponse = { error: url + " is not valid."};
+var errorResponse = { error: url + " is not valid."};
 
 app.use('/*', function redirectHandler(req, res, next) {
 
@@ -63,11 +63,15 @@ function redirectToOriginalUrl(res, errorResponse) {
 
     return ShortUrl.findOne({'id': url}, 'original_url', (err, shortUrl) => {
         if (err) {
-            return res.status(400).send(errorResponse);                
+            return res.status(500).send({
+                error: "An error occured: " + err
+            });                
         } else if (shortUrl) {
             return res.redirect(shortUrl.original_url);
         } else {
-            console.log('error in redirectToOriginalUrl: ', shortUrl);
+            return res.status(404).send({ 
+                error: url + " does not match any saved links, and is not a valid URL."
+            });
         }
 
     });
