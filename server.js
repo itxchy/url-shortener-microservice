@@ -38,7 +38,7 @@ app.use('/*', function redirectHandler(req, res, next) {
     }
     
     url = req.params[0];
-    let validUrl = validator.isURL(url);
+    let validUrl = validator.isURL(url, { require_protocol: true } );
 
     if (!validUrl) {
 
@@ -70,7 +70,7 @@ function redirectToOriginalUrl(res, errorResponse) {
             return res.redirect(shortUrl.original_url);
         } else {
             return res.status(404).send({ 
-                error: url + " does not match any saved links, and is not a valid URL."
+                error: url + " does not match any saved links, and is not a valid URL. URL's must include a protocol (i.e. https)."
             });
         }
 
