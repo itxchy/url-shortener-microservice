@@ -25,23 +25,23 @@ db.once('open', function() {
 
 app.use(compression());
 
+app.use('/', express.static(__dirname + '/public'));
+
 let url;
 let errorResponse = { error: url + " is not valid."};
 
-app.use('/:url', function redirectHandler(req, res, next) {
+app.use('/*', function redirectHandler(req, res, next) {
 
     // ignore requests for /favicon.ico
-    if (req.url === '/favicon.ico') {
+    if (req.params[0] === 'favicon.ico') {
         return;
     }
-
-    url = req.params.url;
-    let validUrl = validator.isUrl(url);
+    
+    url = req.params[0];
+    let validUrl = validator.isURL(url);
 
     if (!validUrl) {
 
-        // if the passed param is invalid, check if it's a short URL id.
-        // if so, then redirect to the original URL. if not, then return an error.
         return redirectToOriginalUrl(res, errorResponse);
 
     }
@@ -64,9 +64,13 @@ function redirectToOriginalUrl(res, errorResponse) {
     return ShortUrl.findOne({'id': url}, 'original_url', (err, shortUrl) => {
         if (err) {
             return res.status(400).send(errorResponse);                
+        } else if (shortUrl) {
+            return res.redirect(shortUrl.original_url);
+        } else {
+            console.log('error in redirectToOriginalUrl: ', shortUrl);
         }
-        return res.redirect(shortUrl.original_url); 
-    });    
+
+    });
 
 }
 
