@@ -11,7 +11,11 @@ const app         = express();
  * Initiallize MongoDB
  */
 
-mongoose.connect('mongodb://localhost:27017/local');
+// dev URI
+//mongoose.connect('mongodb://localhost:27017/local');
+
+// depolyed URI
+mongoose.connect(process.env.MONGOLAB_URI);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongoose encountered an error.'));
@@ -99,7 +103,7 @@ function saveNewShortUrl(generatedID, shortenedURL, res, callback) {
         }
 
         return callback(newShortUrl);
-        
+
     });
 
 }
