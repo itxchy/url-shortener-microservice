@@ -42,9 +42,7 @@ app.use('/:url', (req, res, next) => {
 
         // if the passed param is invalid, check if it's a short URL id.
         // if so, then redirect to the original URL. if not, then return an error.
-        redirectToOriginalUrl(res, errorResponse);
-
-        return;
+        return redirectToOriginalUrl(res, errorResponse);
 
     }
 
@@ -55,13 +53,13 @@ app.use('/:url', (req, res, next) => {
     let generatedID = shortid.generate();
     let shortendURL = `${req.hostname}/${generatedID}`;
 
-    saveNewShortUrl(generatedID, shortendURL);
+    saveNewShortUrl(generatedID, shortendURL, res);
 
 });
 
 function redirectToOriginalUrl(res, errorResponse) {
 
-    ShortUrl.findOne({'id': url}, 'original_url', (err, shortUrl) => {
+    return ShortUrl.findOne({'id': url}, 'original_url', (err, shortUrl) => {
         if (err) {
             return res.status(400).send(errorResponse);                
         }
@@ -70,7 +68,7 @@ function redirectToOriginalUrl(res, errorResponse) {
 
 }
 
-function saveNewShortUrl(generatedID, shortenedURL) {
+function saveNewShortUrl(generatedID, shortenedURL, res) {
 
     let newShortUrl = new ShortUrl({
         id: generatedID,
@@ -78,12 +76,12 @@ function saveNewShortUrl(generatedID, shortenedURL) {
         short_url: shortenedURL
     });
 
-    newShortUrl.save( err => {
+    return newShortUrl.save( (err, newShortUrl) => {
         if (err) throw err;
         console.log('New short URL saved!');
-    });
 
-    return;
+        return newShortUrl;
+    });
 
 }
 
