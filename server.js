@@ -32,12 +32,13 @@ let errorResponse = { error: url + " is not valid."};
 
 app.use('/*', function redirectHandler(req, res, next) {
 
+    url = req.params[0];
+
     // ignore requests for /favicon.ico
-    if (req.params[0] === 'favicon.ico') {
+    if (url === 'favicon.ico') {
         return;
     }
     
-    url = req.params[0];
     let validUrl = validator.isURL(url, { require_protocol: true } );
 
     if (!validUrl) {
@@ -62,20 +63,25 @@ app.use('/*', function redirectHandler(req, res, next) {
 function redirectToOriginalUrl(res, errorResponse) {
 
     return ShortUrl.findOne({'id': url}, 'original_url', (err, shortUrl) => {
+
         if (err) {
+
             return res.status(500).send({
                 error: "An error occured: " + err
-            });                
+            }); 
+
         } else if (shortUrl) {
+
             return res.redirect(shortUrl.original_url);
+
         } else {
+
             return res.status(404).send({ 
                 error: url + " does not match any saved links, and is not a valid URL. URL's must include a protocol (i.e. https)."
             });
+
         }
-
     });
-
 }
 
 function saveNewShortUrl(generatedID, shortenedURL, res, callback) {
@@ -87,12 +93,13 @@ function saveNewShortUrl(generatedID, shortenedURL, res, callback) {
     });
 
     return newShortUrl.save( (err, newShortUrl) => {
+
         if (err) {
             return res.status(500).send(err);
         }
-        console.log('New short URL saved!');
 
         return callback(newShortUrl);
+        
     });
 
 }
