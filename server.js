@@ -16,7 +16,7 @@ mongoose.connect('mongodb://localhost:27017/local');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongoose encountered an error.'));
 db.once('open', function() {
-    console.log('mongodb connected!')
+    console.log('mongodb connected!');
 });
 
 /**
@@ -25,6 +25,8 @@ db.once('open', function() {
 
 app.use(compression());
 
+var url;
+
 app.use('/:url', (req, res, next) => {
 
     // ignore requests for /favicon.ico
@@ -32,7 +34,7 @@ app.use('/:url', (req, res, next) => {
         return;
     }
 
-    var url = req.params.url;
+    url = req.params.url;
     var validUrl = validator.isUrl(url);
     var errorResponse = { error: url + " is not valid."};
 
@@ -51,7 +53,7 @@ app.use('/:url', (req, res, next) => {
 }, function (req, res, next) {
 
     var generatedID = shortid.generate();
-    var shortendURL = `${req.hostname}/${generatedID}`
+    var shortendURL = `${req.hostname}/${generatedID}`;
 
     saveNewShortUrl(generatedID, shortendURL);
 
@@ -68,7 +70,7 @@ function redirectToOriginalUrl(res, errorResponse) {
 
 }
 
-function saveNewShortUrl(generatedID, shortendURL) {
+function saveNewShortUrl(generatedID, shortenedURL) {
 
     var newShortUrl = new ShortUrl({
         id: generatedID,
