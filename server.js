@@ -26,8 +26,9 @@ db.once('open', function() {
 app.use(compression());
 
 let url;
+let errorResponse = { error: url + " is not valid."};
 
-app.use('/:url', (req, res, next) => {
+app.use('/:url', function redirectHandler(req, res, next) {
 
     // ignore requests for /favicon.ico
     if (req.url === '/favicon.ico') {
@@ -36,7 +37,6 @@ app.use('/:url', (req, res, next) => {
 
     url = req.params.url;
     let validUrl = validator.isUrl(url);
-    let errorResponse = { error: url + " is not valid."};
 
     if (!validUrl) {
 
@@ -48,12 +48,14 @@ app.use('/:url', (req, res, next) => {
 
     next();
 
-}, (req, res, next) => {
+}, function newShortUrlHandler(req, res, next) {
 
     let generatedID = shortid.generate();
     let shortendURL = `${req.hostname}/${generatedID}`;
 
-    saveNewShortUrl(generatedID, shortendURL, res);
+    saveNewShortUrl(generatedID, shortendURL, res, function (newShortUrl) {
+        return res.json(newShortUrl);
+    });
 
 });
 
@@ -68,7 +70,7 @@ function redirectToOriginalUrl(res, errorResponse) {
 
 }
 
-function saveNewShortUrl(generatedID, shortenedURL, res) {
+function saveNewShortUrl(generatedID, shortenedURL, res, callback) {
 
     let newShortUrl = new ShortUrl({
         id: generatedID,
@@ -80,7 +82,7 @@ function saveNewShortUrl(generatedID, shortenedURL, res) {
         if (err) throw err;
         console.log('New short URL saved!');
 
-        return newShortUrl;
+        return callback(newShortUrl);
     });
 
 }
