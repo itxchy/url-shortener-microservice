@@ -43,10 +43,14 @@ app.use('/:url', (req, res) => {
         // if the passed param is invalid, check if it's a short URL id.
         // if so, then redirect to the original URL. if not, then return an error.
         ShortUrl.findOne({'id': url}, 'original_url', function(err, shortUrl) {
+            if (err) {
+                return res.status(400).send(errorResponse);                
+            }
             return res.redirect(shortUrl.original_url); 
-        })
+        });
 
-        return res.json(errorResponse);
+        return;
+
     }
 
     var generatedID = shortid.generate();
