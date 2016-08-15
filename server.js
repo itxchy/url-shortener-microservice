@@ -13,7 +13,7 @@ const app         = express();
 
 mongoose.connect('mongodb://localhost:27017/local');
 
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Mongoose encountered an error.'));
 db.once('open', function() {
     console.log('mongodb connected!');
@@ -25,7 +25,7 @@ db.once('open', function() {
 
 app.use(compression());
 
-var url;
+let url;
 
 app.use('/:url', (req, res, next) => {
 
@@ -35,8 +35,8 @@ app.use('/:url', (req, res, next) => {
     }
 
     url = req.params.url;
-    var validUrl = validator.isUrl(url);
-    var errorResponse = { error: url + " is not valid."};
+    let validUrl = validator.isUrl(url);
+    let errorResponse = { error: url + " is not valid."};
 
     if (!validUrl) {
 
@@ -50,10 +50,10 @@ app.use('/:url', (req, res, next) => {
 
     next();
 
-}, function (req, res, next) {
+}, (req, res, next) => {
 
-    var generatedID = shortid.generate();
-    var shortendURL = `${req.hostname}/${generatedID}`;
+    let generatedID = shortid.generate();
+    let shortendURL = `${req.hostname}/${generatedID}`;
 
     saveNewShortUrl(generatedID, shortendURL);
 
@@ -61,7 +61,7 @@ app.use('/:url', (req, res, next) => {
 
 function redirectToOriginalUrl(res, errorResponse) {
 
-    ShortUrl.findOne({'id': url}, 'original_url', function(err, shortUrl) {
+    ShortUrl.findOne({'id': url}, 'original_url', (err, shortUrl) => {
         if (err) {
             return res.status(400).send(errorResponse);                
         }
@@ -72,13 +72,13 @@ function redirectToOriginalUrl(res, errorResponse) {
 
 function saveNewShortUrl(generatedID, shortenedURL) {
 
-    var newShortUrl = new ShortUrl({
+    let newShortUrl = new ShortUrl({
         id: generatedID,
         original_url: url,
         short_url: shortenedURL
     });
 
-    newShortUrl.save(function(err) {
+    newShortUrl.save( err => {
         if (err) throw err;
         console.log('New short URL saved!');
     });
@@ -87,7 +87,7 @@ function saveNewShortUrl(generatedID, shortenedURL) {
 
 }
 
-var server = app.listen(process.env.PORT || 4000, () => {
+const server = app.listen(process.env.PORT || 4000, () => {
     console.log('Express app listening!');
 });
 
