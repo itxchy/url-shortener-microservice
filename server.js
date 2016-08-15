@@ -28,7 +28,7 @@ app.use(compression());
 app.use('/', express.static(__dirname + '/public'));
 
 let url;
-var errorResponse = { error: url + " is not valid."};
+let errorResponse = { error: url + " is not valid."};
 
 app.use('/*', function redirectHandler(req, res, next) {
 
