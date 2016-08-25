@@ -28,7 +28,6 @@ db.once('open', function() {
  */
 
 app.use(compression());
-
 app.use('/', express.static(__dirname + '/public'));
 
 let url;
@@ -45,10 +44,10 @@ app.use('/*', function redirectHandler(req, res, next) {
     
     let validUrl = validator.isURL(url, { require_protocol: true } );
 
+    // if the param is not a URL, assume it's a short link and redirect 
+    // to its matching original URL. If it's not a valid short link, return a 404.
     if (!validUrl) {
-
         return redirectToOriginalUrl(res, errorResponse);
-
     }
 
     next();
@@ -69,21 +68,17 @@ function redirectToOriginalUrl(res, errorResponse) {
     return ShortUrl.findOne({'id': url}, 'original_url', (err, shortUrl) => {
 
         if (err) {
-
             return res.status(500).send({
                 error: "An error occured: " + err
             }); 
 
         } else if (shortUrl) {
-
             return res.redirect(shortUrl.original_url);
 
         } else {
-
             return res.status(404).send({ 
                 error: url + " does not match any saved links, and is not a valid URL. URL's must include a protocol (i.e. https)."
             });
-
         }
     });
 }
@@ -103,9 +98,7 @@ function saveNewShortUrl(generatedID, shortenedURL, res, callback) {
         }
 
         return callback(newShortUrl);
-
     });
-
 }
 
 const server = app.listen(process.env.PORT || 4000, () => {
