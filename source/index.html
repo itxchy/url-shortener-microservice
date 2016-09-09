@@ -16,7 +16,22 @@
     <body>
 
         <main class="container content">
-            <h1>Enter any URL as a param to this page in the address bar, and it will be shortened for you and returned as a JSON object.</h1>
+            <h1>URL Shortener Microservice</h1>
+            <p>
+                Add any valid URL to the path of this domain and you'll receive a shortened URL in a JSON response. Navigating to the shortened URL will redirect you to the original URL.
+            </p>
+            <h2>Example</h2>
+            <p>
+                Let's say our domain is <code>https://short.site</code>. 
+            </p>
+            <p>
+                <code>https://short.site/https://www.somesuperlongwebsite.com/it/just/keeps/going&going=forever&ever=there%20must%20be%20a%20better%20way
+                </code>
+            </p>
+            <p>...becomes...</p>
+            <p>
+                <code>https://short.site/B1P0re0s</code>
+            </p>
         </main>
 
         <script 
